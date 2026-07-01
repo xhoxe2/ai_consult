@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Shop Agent Prototype</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="app">
+      <section class="store" aria-label="Catalog">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">AI storefront prototype</p>
+            <h1>Atelier Demo</h1>
+          </div>
+          <div class="status" id="status">ready</div>
+        </header>
+
+        <section class="selected-product" id="selectedProduct" aria-live="polite"></section>
+        <div class="grid" id="productGrid"></div>
+        <nav class="pagination" id="pagination" aria-label="Catalog pages"></nav>
+      </section>
+
+      <aside class="assistant" aria-label="AI assistant">
+        <div class="assistant-head">
+          <div>
+            <p class="eyebrow">site chat</p>
+            <h2>Tell me what you need. I will open the product card.</h2>
+          </div>
+          <span id="engine">local</span>
+        </div>
+
+        <div class="messages" id="messages">
+          <div class="message bot">Tell me what you are looking for: “a light shirt for summer”, “a black evening dress”, “ivory bridal gown”, or “comfortable shoes for every day”.</div>
+        </div>
+
+        <form class="composer" id="chatForm">
+          <input id="chatInput" name="message" autocomplete="off" placeholder="Example: I need sneakers for daily wear">
+          <button type="submit">Find</button>
+        </form>
+      </aside>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
