@@ -7,12 +7,23 @@
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
+    <div class="atmosphere" aria-hidden="true">
+      <span class="grain"></span>
+    </div>
     <main class="app">
       <section class="store" aria-label="Catalog">
         <header class="topbar">
-          <div>
-            <p class="eyebrow">AI storefront prototype</p>
-            <h1>Atelier Demo</h1>
+          <div class="brand-block">
+            <div class="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 48 48" role="img">
+                <path d="M24 5 39 13.5v17L24 43 9 30.5v-17L24 5Z"></path>
+                <path d="M24 12v24M14.5 18.5 24 24l9.5-5.5"></path>
+              </svg>
+            </div>
+            <div>
+              <p class="eyebrow">AI private atelier</p>
+              <h1>Maison AI Consult</h1>
+            </div>
           </div>
           <div class="status" id="status">ready</div>
         </header>
@@ -34,10 +45,10 @@
         <div class="messages" id="messages">
           <div class="message bot">Hey there! Let's get you started with some options. What do you have in mind?</div>
           <div class="quick-replies">
-            <button type="button" data-message="Show me light shirts for summer">Summer shirts</button>
-            <button type="button" data-message="I need a simple black evening dress">Black dress</button>
-            <button type="button" data-message="Show me comfortable shoes for every day">Daily shoes</button>
-            <button type="button" data-message="I am looking for an ivory bridal gown">Bridal gown</button>
+            <button type="button" data-message="Show me light shirts for summer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z"></path></svg><span>Summer shirts</span></button>
+            <button type="button" data-message="I need a simple black evening dress"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z"></path></svg><span>Black dress</span></button>
+            <button type="button" data-message="Show me comfortable shoes for every day"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z"></path></svg><span>Daily shoes</span></button>
+            <button type="button" data-message="I am looking for an ivory bridal gown"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z"></path></svg><span>Bridal gown</span></button>
           </div>
         </div>
 

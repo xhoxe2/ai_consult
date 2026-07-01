@@ -14,6 +14,14 @@ let turnCount = 0;
 let bagCount = 0;
 const pageSize = 8;
 
+const icons = {
+  atelier: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9L12 3Z"></path><path d="M12 7v10M7 9.5l5 3 5-3"></path></svg>`,
+  bag: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9h10l1 11H6L7 9Z"></path><path d="M9 9V7a3 3 0 0 1 6 0v2"></path></svg>`,
+  arrow: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13"></path><path d="m13 6 6 6-6 6"></path></svg>`,
+  spark: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z"></path><path d="M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8L18 15Z"></path></svg>`,
+  size: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16v8H4V8Z"></path><path d="M8 8v4M12 8v3M16 8v4"></path></svg>`
+};
+
 function money(value) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value);
 }
@@ -42,7 +50,7 @@ function renderProducts() {
           <span>${product.color}</span>
           <span>${product.sizes.join(" / ")}</span>
         </div>
-        <button class="view-button" type="button" data-product-id="${product.id}">View product</button>
+        <button class="view-button" type="button" data-product-id="${product.id}">View product ${icons.arrow}</button>
       </div>
     </article>
   `).join("");
@@ -63,7 +71,10 @@ function renderSelectedProduct() {
   if (!product) return;
   selectedProductId = product.id;
   selectedProduct.innerHTML = `
-    <img src="${product.image}" alt="${product.name}">
+    <div class="selected-media">
+      <img src="${product.image}" alt="${product.name}">
+      <span class="image-badge">${icons.spark} Curated</span>
+    </div>
     <div class="selected-copy">
       <div class="selected-topline">
         <span>${product.category}</span>
@@ -74,9 +85,9 @@ function renderSelectedProduct() {
       <dl>
         <div><dt>Color</dt><dd>${product.color}</dd></div>
         <div><dt>Sizes</dt><dd>${product.sizes.join(", ")}</dd></div>
-        <div><dt>Tags</dt><dd>${product.tags.slice(0, 5).join(", ")}</dd></div>
+        <div><dt>Styling</dt><dd>${product.tags.slice(0, 3).join(", ")}</dd></div>
       </dl>
-      <button type="button" data-action="add_to_bag" data-product-id="${product.id}">Add to bag</button>
+      <button type="button" data-action="add_to_bag" data-product-id="${product.id}">${icons.bag} Add to bag</button>
     </div>
   `;
 }
@@ -117,7 +128,7 @@ function addQuickReplies(replies = []) {
   replies.slice(0, 4).forEach((reply) => {
     const button = document.createElement("button");
     button.type = "button";
-    button.textContent = reply.label;
+    button.innerHTML = `${icons.spark}<span>${reply.label}</span>`;
     if (reply.message) button.dataset.message = reply.message;
     if (reply.action) button.dataset.action = reply.action;
     if (reply.productId) button.dataset.productId = reply.productId;
