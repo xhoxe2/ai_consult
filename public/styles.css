@@ -327,6 +327,34 @@ h2 {
   color: white;
 }
 
+.quick-replies {
+  display: flex;
+  align-self: stretch;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 0 4px;
+  scrollbar-width: thin;
+}
+
+.quick-replies button {
+  flex: 0 0 auto;
+  min-height: 38px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--accent);
+  padding: 0 13px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.quick-replies button:hover {
+  background: #edf7f5;
+}
+
 .composer {
   display: grid;
   grid-template-columns: 1fr auto;

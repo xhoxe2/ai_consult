@@ -280,6 +280,71 @@ function sendJson(res, status, data) {
   res.end(JSON.stringify(data));
 }
 
+function findProduct(productId) {
+  return products.find((product) => product.id === productId);
+}
+
+function isPurchaseIntent(message) {
+  return /\b(how\s+can\s+i\s+buy|how\s+do\s+i\s+buy|buy\s+it|buy\s+this|purchase|checkout|order|add\s+(it|this)?\s*(to\s+)?(bag|cart)|add\s+to\s+(bag|cart))\b/i.test(message);
+}
+
+function wantsDirectAdd(message) {
+  return /\b(add\s+(it|this)?\s*(to\s+)?(bag|cart)|add\s+to\s+(bag|cart))\b/i.test(message);
+}
+
+function purchaseQuickReplies(productId) {
+  return [
+    { label: "Add to bag", action: "add_to_bag", productId },
+    { label: "Show sizes", message: "What sizes are available?" },
+    { label: "Keep browsing", message: "Show me another option" }
+  ];
+}
+
+function purchaseResponse(product, directAdd = false) {
+  return {
+    reply: directAdd
+      ? `Sure - I added ${product.name} to your bag.`
+      : `You can buy ${product.name} by adding it to your bag first. Would you like me to add it now?`,
+    action: {
+      type: directAdd ? "add_to_bag" : "navigate",
+      productId: product.id,
+      reason: directAdd ? "The user asked to add the selected item to the bag." : "The user asked how to buy the selected item."
+    },
+    quickReplies: directAdd ? [{ label: "Checkout", message: "I am ready to checkout" }] : purchaseQuickReplies(product.id)
+  };
+}
+
+function enhanceResult(result, context) {
+  const productId = result?.action?.productId;
+  const product = findProduct(productId);
+  const shouldOfferPurchase = product && result?.action?.type !== "add_to_bag" && context.turnCount >= 2 && context.turnCount % 2 === 0;
+
+  if (shouldOfferPurchase) {
+    const existingReplies = Array.isArray(result.quickReplies) ? result.quickReplies : [];
+    const hasAddToBag = existingReplies.some((reply) => reply.action === "add_to_bag");
+    return {
+      ...result,
+      reply: /add it to your bag/i.test(result.reply) ? result.reply : `${result.reply} Want me to add it to your bag?`,
+      quickReplies: hasAddToBag ? existingReplies : [
+        { label: "Add to bag", action: "add_to_bag", productId: product.id },
+        ...existingReplies.slice(0, 2)
+      ]
+    };
+  }
+
+  if (!result.quickReplies?.length) {
+    return {
+      ...result,
+      quickReplies: [
+        { label: "Similar items", message: "Show me similar items" },
+        { label: "Different style", message: "Show me a different style" }
+      ]
+    };
+  }
+
+  return result;
+}
+
 function serveStatic(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const pathname = url.pathname === "/" ? "/index.html" : url.pathname;
@@ -310,8 +375,14 @@ function serveStatic(req, res) {
   });
 }
 
-function localMatch(message) {
+function localMatch(message, context = {}) {
   const text = message.toLowerCase();
+  const currentProduct = findProduct(context.currentProductId);
+
+  if (currentProduct && isPurchaseIntent(message)) {
+    return purchaseResponse(currentProduct, wantsDirectAdd(message));
+  }
+
   const scored = products.map((product) => {
     const haystack = [
       product.name,
@@ -337,12 +408,20 @@ function localMatch(message) {
   };
 }
 
-async function geminiMatch(message) {
+async function geminiMatch(message, context = {}) {
+  const currentProduct = findProduct(context.currentProductId);
+
+  if (currentProduct && isPurchaseIntent(message)) {
+    return purchaseResponse(currentProduct, wantsDirectAdd(message));
+  }
+
   const prompt = [
     "You are an AI shopping assistant for an English clothing store.",
     "Choose the single best matching product from the catalog and return only valid JSON.",
-    "JSON schema: {\"reply\":\"short helpful answer in English\", \"action\":{\"type\":\"navigate\", \"productId\":\"product id\", \"reason\":\"short reason in English\"}}.",
+    "JSON schema: {\"reply\":\"short helpful answer in English\", \"action\":{\"type\":\"navigate\", \"productId\":\"product id\", \"reason\":\"short reason in English\"}, \"quickReplies\":[{\"label\":\"short option\", \"message\":\"message to send\"}]}",
     "If there is no exact match, choose the closest product and be honest in English.",
+    "If useful, include 2-3 quickReplies. Keep labels short, like messenger option chips.",
+    currentProduct ? `Current selected product: ${JSON.stringify(currentProduct)}` : "No current selected product.",
     `Catalog: ${JSON.stringify(products)}`,
     `User request: ${message}`
   ].join("\n\n");
@@ -370,7 +449,7 @@ async function geminiMatch(message) {
   const productExists = products.some((product) => product.id === parsed?.action?.productId);
 
   if (!productExists) {
-    return localMatch(message);
+    return localMatch(message, context);
   }
 
   return parsed;
@@ -392,17 +471,21 @@ const server = http.createServer(async (req, res) => {
     try {
       const body = JSON.parse(await readBody(req));
       const message = String(body.message || "").trim();
+      const context = {
+        currentProductId: String(body.currentProductId || ""),
+        turnCount: Number(body.turnCount || 1)
+      };
       if (!message) {
         sendJson(res, 400, { error: "Message is required" });
         return;
       }
 
-      const result = API_KEY ? await geminiMatch(message) : localMatch(message);
-      sendJson(res, 200, { ...result, poweredBy: API_KEY ? MODEL : "local-fallback" });
+      const result = API_KEY ? await geminiMatch(message, context) : localMatch(message, context);
+      sendJson(res, 200, { ...enhanceResult(result, context), poweredBy: API_KEY ? MODEL : "local-fallback" });
     } catch (error) {
-      const fallback = localMatch("shirt");
+      const fallback = localMatch("shirt", { turnCount: 1 });
       sendJson(res, 200, {
-        ...fallback,
+        ...enhanceResult(fallback, { turnCount: 1 }),
         poweredBy: "local-fallback",
         warning: error.message
       });
