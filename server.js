@@ -139,7 +139,7 @@ const products = [
     sizes: ["XS", "S", "M", "L"],
     tags: ["silk", "evening", "date night", "women"],
     description: "A bias-cut silk skirt with a soft sheen and easy movement.",
-    image: "https://images.unsplash.com/photo-1583496661160-fb5886a13d27?auto=format&fit=crop&w=900&q=80"
+    image: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=900&q=80"
   },
   {
     id: "puffer-vest",
@@ -194,7 +194,7 @@ const products = [
     sizes: ["S", "M", "L", "XL"],
     tags: ["rain", "waterproof", "commute", "hood", "unisex"],
     description: "A waterproof hooded parka built for wet commutes and weekend walks.",
-    image: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?auto=format&fit=crop&w=900&q=80"
+    image: "https://images.unsplash.com/photo-1523205771623-e0faa4d2813d?auto=format&fit=crop&w=900&q=80"
   },
   {
     id: "training-leggings",
@@ -205,7 +205,7 @@ const products = [
     sizes: ["XS", "S", "M", "L"],
     tags: ["gym", "training", "stretch", "activewear", "women"],
     description: "High-rise training leggings with supportive stretch and a smooth finish.",
-    image: "https://images.unsplash.com/photo-1506629905607-d9f297d3bbbe?auto=format&fit=crop&w=900&q=80"
+    image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=900&q=80"
   },
   {
     id: "merino-tee",

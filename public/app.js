@@ -38,7 +38,10 @@ function currentProducts() {
 function renderProducts() {
   grid.innerHTML = currentProducts().map((product) => `
     <article class="product ${product.id === selectedProductId ? "active" : ""}" id="product-${product.id}" tabindex="0" data-product-id="${product.id}">
-      <img src="${product.image}" alt="${product.name}">
+      <div class="product-media">
+        <img src="${product.image}" alt="${product.name}" loading="lazy" onerror="this.parentElement.classList.add('image-failed'); this.remove();">
+        <span>${product.name}</span>
+      </div>
       <div class="product-body">
         <div class="meta">
           <span>${product.category}</span>
@@ -72,7 +75,8 @@ function renderSelectedProduct() {
   selectedProductId = product.id;
   selectedProduct.innerHTML = `
     <div class="selected-media">
-      <img src="${product.image}" alt="${product.name}">
+      <img src="${product.image}" alt="${product.name}" onerror="this.parentElement.classList.add('image-failed'); this.remove();">
+      <strong>${product.name}</strong>
       <span class="image-badge">${icons.spark} Curated</span>
     </div>
     <div class="selected-copy">
@@ -154,7 +158,8 @@ function addToBag(productId, announce = true) {
 
   bagCount += 1;
   selectedProductId = product.id;
-  renderAll();
+  renderSelectedProduct();
+  renderProducts();
   statusEl.textContent = `bag ${bagCount}`;
 
   if (announce) {

@@ -1,8 +1,8 @@
 :root {
   color-scheme: dark;
   --ink: #f7f1e8;
-  --muted: #b9ab99;
-  --quiet: #7e7368;
+  --muted: #d2c6b8;
+  --quiet: #a89a8d;
   --line: rgba(231, 213, 185, 0.16);
   --paper: #0b0a09;
   --panel: rgba(22, 20, 18, 0.74);
@@ -216,10 +216,14 @@ h2 {
   animation: softSweep 6s ease-in-out infinite;
 }
 
-.selected-media {
+.selected-media,
+.product-media {
   position: relative;
-  min-height: 420px;
   overflow: hidden;
+}
+
+.selected-media {
+  min-height: 420px;
 }
 
 .selected-media img,
@@ -234,6 +238,37 @@ h2 {
 
 .selected-media img {
   height: 100%;
+}
+
+.selected-media > strong,
+.product-media > span {
+  display: none;
+}
+
+.selected-media.image-failed,
+.product-media.image-failed {
+  display: grid;
+  place-items: center;
+  min-height: 260px;
+  background:
+    linear-gradient(135deg, rgba(232, 211, 165, 0.12), rgba(255, 255, 255, 0.03)),
+    rgba(255, 255, 255, 0.045);
+}
+
+.selected-media.image-failed > strong,
+.product-media.image-failed > span {
+  display: block;
+  max-width: 80%;
+  color: var(--champagne);
+  font-family: "Cormorant Garamond", "Times New Roman", serif;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1;
+  text-align: center;
+}
+
+.product-media.image-failed > span {
+  font-size: 24px;
 }
 
 .image-badge {
@@ -283,7 +318,7 @@ h2 {
   max-width: 620px;
   margin-top: 18px;
   color: var(--muted);
-  font-size: 17px;
+  font-size: 18px;
   line-height: 1.65;
 }
 
@@ -305,7 +340,7 @@ h2 {
 
 .selected-copy dt {
   margin-bottom: 8px;
-  color: var(--quiet);
+  color: var(--champagne);
   font-size: 10px;
   font-weight: 850;
   text-transform: uppercase;
@@ -405,6 +440,10 @@ h2 {
   filter: saturate(1.02) contrast(1.08);
 }
 
+.product-media {
+  background: #211d19;
+}
+
 .product img {
   aspect-ratio: 4 / 4.35;
 }
@@ -413,6 +452,8 @@ h2 {
   position: relative;
   z-index: 1;
   padding: 16px;
+  min-height: 254px;
+  background: linear-gradient(180deg, rgba(16, 14, 12, 0.98), rgba(20, 18, 16, 0.98));
 }
 
 .meta {
@@ -420,7 +461,7 @@ h2 {
   justify-content: space-between;
   gap: 8px;
   margin-bottom: 10px;
-  color: var(--muted);
+  color: var(--champagne);
   font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
@@ -431,14 +472,14 @@ h2 {
   font-family: "Cormorant Garamond", "Times New Roman", serif;
   font-size: 25px;
   font-weight: 500;
-  line-height: 0.98;
+  line-height: 1.02;
 }
 
 .product p {
-  min-height: 64px;
+  min-height: 78px;
   color: var(--muted);
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 14px;
+  line-height: 1.55;
 }
 
 .tags {
@@ -453,7 +494,7 @@ h2 {
   border: 1px solid rgba(232, 211, 165, 0.13);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.045);
-  color: var(--champagne);
+  color: var(--ink);
   font-size: 11px;
   font-weight: 850;
 }
@@ -531,23 +572,23 @@ h2 {
   flex-direction: column;
   gap: 12px;
   overflow: auto;
-  padding: 22px 2px;
+  padding: 22px 2px 28px;
   scrollbar-color: rgba(232, 211, 165, 0.36) transparent;
 }
 
 .message {
   max-width: 92%;
-  padding: 14px 15px;
+  padding: 15px 16px;
   border: 1px solid rgba(232, 211, 165, 0.12);
   border-radius: 20px;
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: 15px;
+  line-height: 1.58;
   animation: messageIn 260ms ease both;
 }
 
 .message.bot {
   align-self: flex-start;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.095);
   color: var(--ink);
 }
 
@@ -563,7 +604,8 @@ h2 {
   align-self: stretch;
   gap: 8px;
   overflow-x: auto;
-  padding: 0 0 5px;
+  min-height: 48px;
+  padding: 4px 0 8px;
   scrollbar-width: thin;
 }
 
@@ -572,13 +614,13 @@ h2 {
   flex: 0 0 auto;
   align-items: center;
   gap: 7px;
-  min-height: 40px;
+  min-height: 42px;
   border: 1px solid rgba(232, 211, 165, 0.22);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.055);
+  background: rgba(255, 255, 255, 0.08);
   color: var(--champagne);
   padding: 0 13px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 850;
   cursor: pointer;
   white-space: nowrap;
@@ -587,8 +629,16 @@ h2 {
 }
 
 .quick-replies button svg {
+  flex: 0 0 auto;
   width: 15px;
   height: 15px;
+}
+
+.quick-replies button span {
+  display: inline-block;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .quick-replies button:hover {
